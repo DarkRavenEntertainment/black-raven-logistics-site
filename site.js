@@ -19,12 +19,6 @@
       document.getElementById("statJobs").textContent =
         data.jobs ?? "—";
 
-      document.getElementById("statDistance").textContent =
-        data.total_distance ?? "—";
-
-      document.getElementById("statOnTime").textContent =
-        data.on_time_percent ?? "—";
-
       const updated = document.getElementById("statUpdated");
       if(updated && data.updated_utc){
         updated.textContent = "Updated: " + data.updated_utc + " UTC";

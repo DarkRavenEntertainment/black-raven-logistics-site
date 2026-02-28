@@ -1,42 +1,53 @@
-(function(){
-
+(function () {
+  // Active nav
   const path = location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll(".menu a").forEach(a=>{
-    if(a.getAttribute("href") === path) a.classList.add("active");
+  document.querySelectorAll(".menu a").forEach((a) => {
+    if (a.getAttribute("href") === path) a.classList.add("active");
   });
 
+  // Year
   const y = document.getElementById("year");
-  if(y) y.textContent = String(new Date().getFullYear());
+  if (y) y.textContent = String(new Date().getFullYear());
 
-  const VTC_ID = 43152;
-  const API_URL = `https://hub.truckyapp.com/api/vtc/${VTC_ID}`;
+  // Only run Trucky logic on pages that have the elements
+  const hasStats =
+    document.getElementById("statMembers") &&
+    document.getElementById("statJobs") &&
+    document.getElementById("statDistance") &&
+    document.getElementById("statRating");
 
-  async function loadTruckyStats(){
-    try{
-      const res = await fetch(API_URL);
-      if(!res.ok) throw new Error("API error");
-      const data = await res.json();
+  if (!hasStats) return;
 
-      // Adjust keys if needed based on API response
-      document.getElementById("statMembers").textContent =
-        data.members?.count ?? "—";
+  const setText = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = String(val ?? "—");
+  };
 
-      document.getElementById("statJobs").textContent =
-        data.stats?.jobs ?? "—";
+  const fmtNumber = (n) => {
+    const num = Number(n);
+    if (Number.isFinite(num)) return num.toLocaleString();
+    return "—";
+  };
 
-      document.getElementById("statDistance").textContent =
-        data.stats?.distance
-          ? `${Number(data.stats.distance).toLocaleString()} km`
-          : "—";
+  // Read local generated file (same-origin -> works on GitHub Pages)
+  fetch("trucky.json", { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error("trucky.json missing"))))
+    .then((data) => {
+      setText("statMembers", fmtNumber(data.members));
+      setText("statJobs", fmtNumber(data.jobs));
+      setText("statDistance", data.distance_text ?? "—");
+      setText("statRating", data.rating ?? "—");
 
-      document.getElementById("statRating").textContent =
-        data.rating ?? "—";
-
-    }catch(e){
-      console.error("Trucky API failed:", e);
-    }
-  }
-
-  loadTruckyStats();
-
+      const updated = document.getElementById("truckyUpdated");
+      if (updated && data.updated_utc) {
+        updated.textContent = `Updated: ${data.updated_utc} UTC`;
+      }
+    })
+    .catch(() => {
+      // If action hasn't run yet, show a clean fallback
+      setText("statMembers", "—");
+      setText("statJobs", "—");
+      setText("statDistance", "—");
+      setText("statRating", "—");
+    });
 })();

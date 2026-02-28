@@ -1,0 +1,109 @@
+name: Update Trucky Stats
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"   # every 30 minutes
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch Trucky stats and write trucky.json
+        run: |
+          python3 - << 'PY'
+          import json, datetime, sys, urllib.request
+
+          COMPANY_ID = 43152
+
+          # We try a few likely endpoints. Trucky's docs are in OpenAPI, and endpoints may vary by version.
+          candidates = [
+            f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}/alltime",
+            f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}/stats",
+            f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}",
+          ]
+
+          headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "User-Agent": "BlackRavenLogisticsSite/1.0 (GitHub Actions)"
+          }
+
+          data = None
+          used = None
+          last_err = None
+
+          for url in candidates:
+            try:
+              req = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(req, timeout=25) as resp:
+                raw = resp.read().decode("utf-8", errors="replace")
+              j = json.loads(raw)
+              # Look for anything that resembles stats
+              if isinstance(j, dict) and j:
+                data = j
+                used = url
+                break
+            except Exception as e:
+              last_err = e
+
+          out = {
+            "members": None,
+            "jobs": None,
+            "distance_text": None,
+            "rating": None,
+            "updated_utc": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
+            "source": used
+          }
+
+          # Best-effort extraction across possible schemas
+          def pick(*keys):
+            cur = data
+            for k in keys:
+              if not isinstance(cur, dict) or k not in cur:
+                return None
+              cur = cur[k]
+            return cur
+
+          # members count
+          out["members"] = pick("members", "count") or pick("stats", "members") or pick("members") or pick("membersCount")
+
+          # jobs
+          out["jobs"] = pick("stats", "jobs") or pick("jobs") or pick("jobsCount")
+
+          # distance (km/mi unknown) -> we format as a plain number with unit if we can infer
+          dist = pick("stats", "distance") or pick("distance") or pick("distance_total")
+          if dist is not None:
+            try:
+              dist_num = float(dist)
+              # default label as km (Trucky commonly reports km). You can change to mi later if needed.
+              out["distance_text"] = f"{int(dist_num):,} km"
+            except:
+              out["distance_text"] = str(dist)
+
+          # rating
+          out["rating"] = pick("rating") or pick("stats", "rating") or pick("score")
+
+          with open("trucky.json", "w", encoding="utf-8") as f:
+            json.dump(out, f, ensure_ascii=False, indent=2)
+
+          print("Wrote trucky.json from:", used, "err:", last_err)
+          PY
+
+      - name: Commit & push if changed
+        run: |
+          if git diff --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add trucky.json
+          git commit -m "chore: update Trucky stats"
+          git push

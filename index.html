@@ -11,22 +11,20 @@
 <header class="topbar">
 <div class="container nav">
 <a class="brand" href="index.html">
-<div class="logoMark">
-<img src="brl-bg.png" alt="BRL Logo">
-</div>
-<div class="brandTitle">
-<b>Black Raven Logistics</b>
-<span>We Haul The Night.</span>
-</div>
+  <div class="logoMark"><img src="brl-bg.png" alt="BRL Logo"></div>
+  <div class="brandTitle">
+    <b>Black Raven Logistics</b>
+    <span>We Haul The Night.</span>
+  </div>
 </a>
 
 <nav class="menu">
-<a href="index.html">Home</a>
-<a href="truckers.html">Official Truckers</a>
-<a href="modpack.html">Modpack</a>
-<a href="radio.html">Radio</a>
-<a href="live.html">Live</a>
-<a href="join.html">Join</a>
+  <a href="index.html">Home</a>
+  <a href="truckers.html">Official Truckers</a>
+  <a href="modpack.html">Modpack</a>
+  <a href="radio.html">Radio</a>
+  <a href="live.html">Live</a>
+  <a href="join.html">Join</a>
 </nav>
 </div>
 </header>
@@ -34,46 +32,88 @@
 <main class="container">
 
 <section class="hero">
-<div class="heroInner">
-<div class="kicker">Official VTC Hub</div>
-<h1 class="h1">Black Raven Logistics</h1>
-<p class="sub">
-Realism-focused ATS operations: official mod collection, convoy radio, verified roster, and live dispatch.
-</p>
+  <div class="heroInner">
+    <div class="kicker">Official VTC Hub</div>
+    <h1 class="h1">Black Raven Logistics</h1>
+    <p class="sub">
+      Realism-focused ATS operations: official mod collection, convoy radio, verified roster, and live dispatch.
+    </p>
 
-<div class="ctaRow">
-<a class="btn primary" href="join.html">🚛 Join BRL</a>
-<a class="btn" href="modpack.html">📦 Modpack</a>
-<a class="btn" href="radio.html">📻 Radio</a>
-<a class="btn" href="live.html">🎥 Live</a>
-</div>
+    <div class="ctaRow">
+      <a class="btn primary" href="join.html">🚛 Join BRL</a>
+      <a class="btn" href="modpack.html">📦 Modpack</a>
+      <a class="btn" href="radio.html">📻 Radio</a>
+      <a class="btn" href="live.html">🎥 Live</a>
+    </div>
 
-<div class="notice">
-Currently Offline — Next Convoy: Friday 20:00 GMT
-</div>
-</div>
+    <div class="notice">Currently Offline — Next Convoy: Friday 20:00 GMT</div>
+  </div>
 </section>
 
 <section class="grid">
-<div class="card span6">
-<div class="cardHeader"><h2>Company Standard</h2></div>
-<div class="cardBody">
-<p><b>Fleet:</b> Kenworth W900 (86" Sleeper)</p>
-<p><b>Operations:</b> Disciplined, realism-focused convoys</p>
-<p><b>Dispatch:</b> twitch.tv/RavensKnightTV</p>
-</div>
-</div>
 
-<div class="card span6">
-<div class="cardHeader"><h2>Quick Start</h2></div>
-<div class="cardBody">
-<ol>
-<li>Subscribe to the Workshop collection.</li>
-<li>Open convoy radio before departure.</li>
-<li>Confirm roster status.</li>
-</ol>
-</div>
-</div>
+  <div class="card span6">
+    <div class="cardHeader"><h2>About BRL</h2></div>
+    <div class="cardBody">
+      <p>
+        Black Raven Logistics is a realism-first ATS company built around disciplined convoys,
+        clean comms, and a consistent modded experience.
+      </p>
+      <p>
+        We focus on stable setups, professional driving standards, and a verified roster for official operations.
+      </p>
+    </div>
+  </div>
+
+  <div class="card span6">
+    <div class="cardHeader"><h2>Quick Start</h2></div>
+    <div class="cardBody">
+      <ol>
+        <li>Subscribe to the official Workshop collection.</li>
+        <li>Open convoy radio before departure.</li>
+        <li>Apply via Discord to get verified on the roster.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="card span12">
+    <div class="cardHeader">
+      <h2>Trucky Company</h2>
+      <a class="btn" id="truckyLink" href="https://hub.truckyapp.com/directory" target="_blank" rel="noopener">Open on Trucky</a>
+    </div>
+    <div class="cardBody">
+      <div class="statsGrid">
+        <div class="stat">
+          <div class="label">Members</div>
+          <div class="value" id="statMembers">—</div>
+        </div>
+        <div class="stat">
+          <div class="label">Jobs Delivered</div>
+          <div class="value" id="statJobs">—</div>
+        </div>
+        <div class="stat">
+          <div class="label">Distance</div>
+          <div class="value" id="statDistance">—</div>
+        </div>
+        <div class="stat">
+          <div class="label">Rating</div>
+          <div class="value" id="statRating">—</div>
+        </div>
+      </div>
+      <div class="small">
+        Stats will be displayed here for the BRL Trucky hub page.
+      </div>
+    </div>
+  </div>
+
+  <div class="card span12">
+    <div class="cardHeader"><h2>Media Gallery</h2></div>
+    <div class="cardBody">
+      <div class="gallery" id="mediaGallery"></div>
+      <div class="small">Screenshots and convoy moments will be posted here.</div>
+    </div>
+  </div>
+
 </section>
 
 <div class="footer">© <span id="year"></span> Black Raven Logistics</div>

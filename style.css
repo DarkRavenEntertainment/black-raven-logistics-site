@@ -191,6 +191,7 @@ a{ text-decoration:none; color:inherit; }
   .span6{ grid-column:span 6; }
   .span4{ grid-column:span 4; }
   .span8{ grid-column:span 8; }
+  .span12{ grid-column:span 12; }
 }
 
 .footer{
@@ -276,4 +277,133 @@ a{ text-decoration:none; color:inherit; }
   backdrop-filter: blur(10px);
   font-size:12px;
   color: var(--text);
+}
+
+/* =========================
+   ROSTER (Official Truckers)
+   ========================= */
+
+.rosterGrid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:14px;
+}
+
+@media(min-width:900px){
+  .rosterGrid{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:16px;
+  }
+}
+
+.driverCard{
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,0.03);
+  padding:18px;
+  transition:0.15s ease;
+}
+
+.driverCard:hover{
+  border-color:rgba(180,13,43,0.45);
+  box-shadow:0 18px 50px rgba(0,0,0,0.55);
+  transform: translateY(-2px);
+}
+
+.driverTop{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:12px;
+}
+
+.driverName{
+  font-size:18px;
+  font-weight:800;
+  line-height:1.1;
+}
+
+.driverRole{
+  font-size:12px;
+  font-weight:750;
+  padding:7px 12px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.03);
+  color:var(--text);
+  white-space:nowrap;
+}
+
+.driverMeta{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:12px;
+}
+
+@media(min-width:700px){
+  .driverMeta{
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap:14px;
+  }
+}
+
+.metaBlock .metaLabel{
+  color:var(--muted);
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1.4px;
+  margin-bottom:6px;
+}
+
+.metaBlock .metaValue{
+  font-size:14px;
+  font-weight:650;
+  line-height:1.25;
+}
+
+.status-active{
+  color:#22c55e;
+}
+
+.status-inactive{
+  color:#f87171;
+}
+
+/* Role badge colors */
+.role-owner{
+  border-color: rgba(180,13,43,0.55);
+  background: rgba(180,13,43,0.18);
+}
+
+.role-ops{
+  border-color: rgba(140,120,255,0.45);
+  background: rgba(140,120,255,0.14);
+}
+
+.role-senior{
+  border-color: rgba(80,160,255,0.40);
+  background: rgba(80,160,255,0.12);
+}
+
+.role-driver{
+  border-color: rgba(232,236,255,0.18);
+  background: rgba(255,255,255,0.03);
+}
+
+.role-trial{
+  border-color: rgba(232,236,255,0.12);
+  background: rgba(255,255,255,0.02);
+  color: var(--muted);
+}
+
+.rosterNotice{
+  margin-top:16px;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(180,13,43,0.35);
+  background:rgba(180,13,43,0.10);
+  color:var(--text);
 }

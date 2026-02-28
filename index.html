@@ -11,7 +11,9 @@
 <header class="topbar">
 <div class="container nav">
 <a class="brand" href="index.html">
-  <div class="logoMark"><img src="brl-bg.png" alt="BRL Logo"></div>
+  <div class="logoMark">
+    <img src="brl-bg.png" alt="BRL Logo">
+  </div>
   <div class="brandTitle">
     <b>Black Raven Logistics</b>
     <span>We Haul The Night.</span>
@@ -20,7 +22,7 @@
 
 <nav class="menu">
   <a href="index.html">Home</a>
-  <a href="truckers.html">Official Truckers</a>
+  <a href="truckers.html">Roster</a>
   <a href="modpack.html">Modpack</a>
   <a href="radio.html">Radio</a>
   <a href="live.html">Live</a>
@@ -33,87 +35,126 @@
 
 <section class="hero">
   <div class="heroInner">
-    <div class="kicker">Official VTC Hub</div>
+    <div class="kicker">Logistics Organisation</div>
     <h1 class="h1">Black Raven Logistics</h1>
     <p class="sub">
-      Realism-focused ATS operations: official mod collection, convoy radio, verified roster, and live dispatch.
+      Black Raven Logistics is a structured, realism-focused logistics organisation operating across
+      terrestrial, performance, and interstellar environments.
+      Our operations prioritise discipline, coordination, and professional standards.
     </p>
 
     <div class="ctaRow">
-      <a class="btn primary" href="join.html">🚛 Join BRL</a>
-      <a class="btn" href="modpack.html">📦 Modpack</a>
-      <a class="btn" href="radio.html">📻 Radio</a>
-      <a class="btn" href="live.html">🎥 Live</a>
+      <a class="btn primary" href="join.html">Join the Organisation</a>
+      <a class="btn" href="truckers.html">View Roster</a>
     </div>
 
-    <div class="notice">Currently Offline — Next Convoy: Friday 20:00 GMT</div>
+    <div class="notice">
+      Headquarters: Los Angeles | Operational Environment: Multi-Division
+    </div>
   </div>
 </section>
 
 <section class="grid">
 
+  <!-- Ground Division -->
   <div class="card span6">
-    <div class="cardHeader"><h2>About BRL</h2></div>
+    <div class="cardHeader">
+      <h2>Ground Logistics Division</h2>
+    </div>
     <div class="cardBody">
       <p>
-        Black Raven Logistics is a realism-first ATS company built around disciplined convoys,
-        clean comms, and a consistent modded experience.
+        The Ground Division operates within American Truck Simulator,
+        conducting structured convoy operations headquartered in Los Angeles.
       </p>
       <p>
-        We focus on stable setups, professional driving standards, and a verified roster for official operations.
+        All operations follow strict realism standards, coordinated dispatch,
+        and official mod compliance. Performance is tracked via Trucky.
       </p>
     </div>
   </div>
 
+  <!-- Interstellar Division -->
   <div class="card span6">
-    <div class="cardHeader"><h2>Quick Start</h2></div>
+    <div class="cardHeader">
+      <h2>Interstellar Logistics Division</h2>
+    </div>
     <div class="cardBody">
-      <ol>
-        <li>Subscribe to the official Workshop collection.</li>
-        <li>Open convoy radio before departure.</li>
-        <li>Apply via Trucky to get verified on the roster.</li>
-      </ol>
+      <p>
+        Operating under Black Raven Interstellar Logistics,
+        this division manages deep-space transport, trade logistics,
+        fleet carrier coordination, and security escort operations.
+      </p>
+      <p>
+        Structured command hierarchy and operational discipline mirror
+        ground-based logistics principles.
+      </p>
     </div>
   </div>
 
+  <!-- Performance Division -->
+  <div class="card span6">
+    <div class="cardHeader">
+      <h2>Performance Division</h2>
+    </div>
+    <div class="cardBody">
+      <p>
+        The Performance Division conducts structured competitive racing
+        operations within Assetto Corsa environments.
+      </p>
+      <p>
+        Precision, consistency, and mechanical discipline are core
+        operational standards.
+      </p>
+    </div>
+  </div>
+
+  <!-- Operational Standards -->
+  <div class="card span6">
+    <div class="cardHeader">
+      <h2>Operational Standards</h2>
+    </div>
+    <div class="cardBody">
+      <ul>
+        <li>Structured chain of command</li>
+        <li>Realism-focused convoy execution</li>
+        <li>Professional communication standards</li>
+        <li>Performance tracking & accountability</li>
+        <li>Disciplined multi-environment logistics operations</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Organisation Snapshot -->
   <div class="card span12">
     <div class="cardHeader">
-      <h2>Trucky Company</h2>
-      <a class="btn"
-         href="https://hub.truckyapp.com/vtc/black-raven-logistics"
-         target="_blank" rel="noopener">Open on Trucky</a>
+      <h2>Organisation Snapshot</h2>
     </div>
     <div class="cardBody">
       <div class="statsGrid">
         <div class="stat">
-          <div class="label">Members</div>
-          <div class="value" id="statMembers">—</div>
+          <div class="label">Headquarters</div>
+          <div class="value">Los Angeles</div>
         </div>
         <div class="stat">
-          <div class="label">Jobs Delivered</div>
-          <div class="value" id="statJobs">—</div>
+          <div class="label">Divisions</div>
+          <div class="value">3</div>
+        </div>
+        <div class="stat">
+          <div class="label">Primary Focus</div>
+          <div class="value">Structured Logistics</div>
+        </div>
+        <div class="stat">
+          <div class="label">Tracking</div>
+          <div class="value">Trucky Integrated</div>
         </div>
       </div>
-
-      <div class="small" id="statUpdated">Updated: —</div>
-    </div>
-  </div>
-
-  <div class="card span12">
-    <div class="cardHeader"><h2>Media Gallery</h2></div>
-    <div class="cardBody">
-      <div class="gallery" id="mediaGallery">
-        <div class="tile"><img src="brl-bg.png" alt="BRL Fleet Branding"><div class="cap">BRL Fleet Branding</div></div>
-        <div class="tile"><img src="brl-bg.png" alt="Convoy Nights"><div class="cap">Convoy Nights</div></div>
-        <div class="tile"><img src="brl-bg.png" alt="Dispatch & Ops"><div class="cap">Dispatch & Ops</div></div>
-      </div>
-      <div class="small">Upload real screenshots later and replace these tiles.</div>
     </div>
   </div>
 
 </section>
 
 <div class="footer">© <span id="year"></span> Black Raven Logistics</div>
+
 </main>
 
 <script src="site.js"></script>

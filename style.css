@@ -1,4 +1,3 @@
-/* style.css */
 :root{
   --bg:#07090f;
   --panel:#0d1120;
@@ -13,6 +12,7 @@
 }
 
 *{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
 body{
   margin:0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Arial;
@@ -24,6 +24,15 @@ body{
 }
 
 a{ text-decoration:none; color:inherit; }
+p{ line-height:1.65; }
+ul,ol{ padding-left:18px; }
+li{ margin:6px 0; }
+
+:focus-visible{
+  outline:2px solid rgba(180,13,43,0.65);
+  outline-offset:3px;
+  border-radius:10px;
+}
 
 .container{
   max-width:var(--max);
@@ -52,6 +61,7 @@ a{ text-decoration:none; color:inherit; }
   display:flex;
   align-items:center;
   gap:12px;
+  min-width: 220px;
 }
 
 .logoMark{
@@ -68,7 +78,7 @@ a{ text-decoration:none; color:inherit; }
   object-fit:cover;
 }
 
-.brandTitle b{ font-size:14px; }
+.brandTitle b{ font-size:14px; display:block; }
 .brandTitle span{
   font-size:12px;
   color:var(--muted);
@@ -78,6 +88,7 @@ a{ text-decoration:none; color:inherit; }
   display:flex;
   gap:8px;
   flex-wrap:wrap;
+  align-items:center;
 }
 
 .menu a{
@@ -86,12 +97,14 @@ a{ text-decoration:none; color:inherit; }
   font-size:13px;
   color:var(--muted);
   transition:0.15s ease;
+  border:1px solid transparent;
 }
 
 .menu a.active,
 .menu a:hover{
   background:rgba(255,255,255,0.05);
   color:var(--text);
+  border-color:rgba(232,236,255,0.12);
 }
 
 .hero{
@@ -119,6 +132,7 @@ a{ text-decoration:none; color:inherit; }
 .sub{
   color:var(--muted);
   max-width:760px;
+  margin:0;
 }
 
 .ctaRow{
@@ -147,6 +161,10 @@ a{ text-decoration:none; color:inherit; }
 }
 
 .btn:hover{ transform:translateY(-2px); }
+
+@media (hover:none){
+  .btn:hover{ transform:none; }
+}
 
 .notice{
   margin-top:20px;
@@ -186,7 +204,11 @@ a{ text-decoration:none; color:inherit; }
   letter-spacing:0.2px;
 }
 
-.cardBody{ padding:20px; }
+.cardBody{
+  padding:20px;
+}
+.cardBody > :first-child{ margin-top:0; }
+.cardBody > :last-child{ margin-bottom:0; }
 
 @media(min-width:900px){
   .span6{ grid-column:span 6; }
@@ -209,8 +231,15 @@ a{ text-decoration:none; color:inherit; }
   overflow:hidden;
   border:1px solid var(--line);
 }
+.embed iframe{ width:100%; height:100%; display:block; }
 
-/* Trucky stat cards */
+.sep{
+  border:0;
+  border-top:1px solid var(--line);
+  margin:18px 0;
+}
+
+/* Stats cards */
 .statsGrid{
   display:grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -242,61 +271,18 @@ a{ text-decoration:none; color:inherit; }
   margin-top:10px;
 }
 
-/* Gallery */
-.gallery{
-  display:grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap:12px;
-}
-@media(min-width:900px){
-  .gallery{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-.tile{
-  position:relative;
-  border-radius:18px;
-  overflow:hidden;
-  border:1px solid var(--line);
-  background: rgba(255,255,255,0.02);
-  aspect-ratio: 16/10;
-}
-.tile img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-  transform: scale(1.01);
-}
-.tile .cap{
-  position:absolute;
-  left:10px;
-  right:10px;
-  bottom:10px;
-  padding:10px 10px;
-  border-radius:14px;
-  background: rgba(7,9,15,0.72);
-  border: 1px solid rgba(232,236,255,0.10);
-  backdrop-filter: blur(10px);
-  font-size:12px;
-  color: var(--text);
-}
-
-/* =========================
-   ROSTER (Official Truckers)
-   ========================= */
-
+/* Roster */
 .rosterGrid{
   display:grid;
   grid-template-columns: 1fr;
   gap:14px;
 }
-
 @media(min-width:900px){
   .rosterGrid{
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap:16px;
   }
 }
-
 .driverCard{
   border:1px solid var(--line);
   border-radius:18px;
@@ -304,11 +290,13 @@ a{ text-decoration:none; color:inherit; }
   padding:18px;
   transition:0.15s ease;
 }
-
 .driverCard:hover{
   border-color:rgba(180,13,43,0.45);
   box-shadow:0 18px 50px rgba(0,0,0,0.55);
   transform: translateY(-2px);
+}
+@media (hover:none){
+  .driverCard:hover{ transform:none; }
 }
 
 .driverTop{
@@ -320,13 +308,11 @@ a{ text-decoration:none; color:inherit; }
   border-bottom:1px solid var(--line);
   margin-bottom:12px;
 }
-
 .driverName{
   font-size:18px;
   font-weight:800;
   line-height:1.1;
 }
-
 .driverRole{
   font-size:12px;
   font-weight:750;
@@ -337,20 +323,17 @@ a{ text-decoration:none; color:inherit; }
   color:var(--text);
   white-space:nowrap;
 }
-
 .driverMeta{
   display:grid;
   grid-template-columns: 1fr;
   gap:12px;
 }
-
 @media(min-width:700px){
   .driverMeta{
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap:14px;
   }
 }
-
 .metaBlock .metaLabel{
   color:var(--muted);
   font-size:11px;
@@ -358,42 +341,28 @@ a{ text-decoration:none; color:inherit; }
   letter-spacing:1.4px;
   margin-bottom:6px;
 }
-
 .metaBlock .metaValue{
   font-size:14px;
   font-weight:650;
   line-height:1.25;
 }
 
-.status-active{
-  color:#22c55e;
-}
+.status-active{ color:#22c55e; }
+.status-inactive{ color:#f87171; }
 
-.status-inactive{
-  color:#f87171;
-}
-
-/* Role badge colors */
-.role-owner{
-  border-color: rgba(180,13,43,0.55);
-  background: rgba(180,13,43,0.18);
-}
-
+/* Role badge colors (shared across divisions) */
 .role-ops{
   border-color: rgba(140,120,255,0.45);
   background: rgba(140,120,255,0.14);
 }
-
 .role-senior{
   border-color: rgba(80,160,255,0.40);
   background: rgba(80,160,255,0.12);
 }
-
 .role-driver{
   border-color: rgba(232,236,255,0.18);
   background: rgba(255,255,255,0.03);
 }
-
 .role-trial{
   border-color: rgba(232,236,255,0.12);
   background: rgba(255,255,255,0.02);
@@ -409,42 +378,7 @@ a{ text-decoration:none; color:inherit; }
   color:var(--text);
 }
 
-/* =========================
-   Professional polish (append-only)
-   ========================= */
-
-:focus-visible{
-  outline:2px solid rgba(180,13,43,0.65);
-  outline-offset:3px;
-  border-radius:10px;
-}
-
-p{ line-height:1.65; }
-ul, ol{ padding-left:18px; }
-li{ margin:6px 0; }
-
-/* Used by radio.html */
-.sep{
-  border:0;
-  border-top:1px solid var(--line);
-  margin:18px 0;
-}
-
-@media (hover:none){
-  .btn:hover{ transform:none; }
-  .driverCard:hover{ transform:none; }
-}
-
-.cardBody > :first-child{ margin-top:0; }
-.cardBody > :last-child{ margin-bottom:0; }
-
-.embed iframe{ width:100%; height:100%; display:block; }
-
 @media (max-width:520px){
   .h1{ font-size:34px; }
   .heroInner{ padding:26px; }
-}
-
-.menu a.active{
-  border:1px solid rgba(232,236,255,0.12);
 }

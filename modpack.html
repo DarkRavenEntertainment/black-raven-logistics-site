@@ -1,33 +1,120 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <title>Modpack - BRL</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Modpack — BRL</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-<header>
-  <h1>BRL Modpack</h1>
-  <nav>
-    <a href="index.html">Home</a>
-  </nav>
+<header class="topbar">
+  <div class="container nav">
+    <a class="brand" href="index.html">
+      <div class="logoMark">BRL</div>
+      <div class="brandTitle">
+        <b>Black Raven Logistics</b>
+        <span>We Haul The Night.</span>
+      </div>
+    </a>
+
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="truckers.html">Official Truckers</a>
+      <a href="modpack.html">Modpack</a>
+      <a href="radio.html">Radio</a>
+      <a href="live.html">Live</a>
+      <a href="join.html">Join</a>
+    </nav>
+  </div>
 </header>
 
-<div class="container">
-  <div class="card">
-    <h2>Required Mods</h2>
-    <ul>
-      <li>BRL Paint Pack</li>
-      <li>Sound Fixes Pack</li>
-      <li>Realistic Physics</li>
-    </ul>
-  </div>
-</div>
+<main class="container">
+  <section class="hero">
+    <div class="heroInner">
+      <div class="kicker">ATS Realism Pack</div>
+      <h1 class="h1">BRL Official Mod Collection</h1>
+      <p class="sub">
+        This is the official Black Raven Logistics Steam Workshop collection.
+        Required for convoy participation unless stated otherwise.
+      </p>
 
-<footer>
-  © <span id="year"></span> BRL
-</footer>
+      <div class="ctaRow">
+        <a class="btn primary"
+           href="https://steamcommunity.com/sharedfiles/filedetails/?id=3674963754"
+           target="_blank"
+           rel="noopener">
+          🧰 Open Steam Workshop Collection
+        </a>
 
-<script src="assets/site.js"></script>
+        <a class="btn"
+           href="radio.html">
+          📻 Open Convoy Radio
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card span12">
+      <div class="cardHeader">
+        <h2>How To Install</h2>
+        <span class="hint">Quick Setup</span>
+      </div>
+      <div class="cardBody">
+        <ol>
+          <li>Click <b>Open Steam Workshop Collection</b> above.</li>
+          <li>Click <b>Subscribe to all</b>.</li>
+          <li>Launch American Truck Simulator.</li>
+          <li>Open <b>Mod Manager</b>.</li>
+          <li>Enable all BRL mods.</li>
+          <li>Confirm load order if specified by BRL.</li>
+        </ol>
+
+        <div class="notice">
+          Tip: Avoid adding extra weather or traffic mods on top of the BRL collection unless approved — they can cause conflicts.
+        </div>
+      </div>
+    </div>
+
+    <div class="card span6">
+      <div class="cardHeader">
+        <h2>Convoy Settings</h2>
+        <span class="hint">Recommended</span>
+      </div>
+      <div class="cardBody">
+        <ul>
+          <li>Fatigue: ON</li>
+          <li>Fines: ON</li>
+          <li>Truck stability: LOW</li>
+          <li>Trailer stability: LOW</li>
+          <li>Braking intensity: Reduced</li>
+          <li>Speed discipline: 65mph max (company standard)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card span6">
+      <div class="cardHeader">
+        <h2>Why We Use A Collection</h2>
+        <span class="hint">Consistency</span>
+      </div>
+      <div class="cardBody">
+        <p>
+          Using a single Workshop collection ensures every driver runs the same mod set,
+          reducing crashes, desync issues, and incompatibilities during convoys.
+        </p>
+        <p>
+          Keep your BRL profile separate from heavily modded singleplayer profiles for best stability.
+        </p>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="footer">© <span id="year"></span> Black Raven Logistics</div>
+</main>
+
+<script src="site.js"></script>
 </body>
 </html>

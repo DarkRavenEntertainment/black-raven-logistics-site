@@ -1,43 +1,84 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <title>Official Truckers - BRL</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Official Truckers — BRL</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-<header>
-  <h1>Official Truckers</h1>
-  <nav>
-    <a href="index.html">Home</a>
-  </nav>
+<header class="topbar">
+  <div class="container nav">
+    <a class="brand" href="index.html">
+      <div class="logoMark">BRL</div>
+      <div class="brandTitle">
+        <b>Black Raven Logistics</b>
+        <span>We Haul The Night.</span>
+      </div>
+    </a>
+
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="truckers.html">Official Truckers</a>
+      <a href="modpack.html">Modpack</a>
+      <a href="radio.html">Radio</a>
+      <a href="live.html">Live</a>
+      <a href="join.html">Join</a>
+    </nav>
+  </div>
 </header>
 
-<div class="container">
-  <div class="card">
-    <h2>Raven</h2>
-    <p>Owner | Kenworth W900</p>
-  </div>
-</div>
+<main class="container">
+  <section class="hero">
+    <div class="heroInner">
+      <div class="kicker">Roster</div>
+      <h1 class="h1">Official Truckers</h1>
+      <p class="sub">Verified BRL members. (For now this is manual; we can automate later.)</p>
+    </div>
+  </section>
 
-  <div class="container">
-  <div class="card">
-    <h2>Rose_04</h2>
-    <p>Owner | Kenworth W900</p>
-  </div>
-</div>
+  <section class="grid">
+    <div class="card span12">
+      <div class="cardHeader"><h2>Roster</h2><span class="hint">Manual list</span></div>
+      <div class="cardBody">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Callsign</th>
+              <th>Role</th>
+              <th>Primary Truck</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Raven</b><br><small>UK / US Routes</small></td>
+              <td>Owner</td>
+              <td>Kenworth W900 (86" Sleeper)</td>
+              <td><span class="badge">Active</span></td>
+            </tr>
+            <tr>
+              <td><b>OTKRain</b><br><small>UK / US Routes</small></td>
+              <td>Driver</td>
+              <td>Kenworth W900 (86" Sleeper)</td>
+              <td><span class="badge">Active</span></td>
+            </tr> 
+            <tr>
+              <td><b>Rose_04</b><br><small>UK / US Routes</small></td>
+              <td>Driver</td>
+              <td>Kenworth W900 (86" Sleeper)</td>
+              <td><span class="badge">Active</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
-  <div class="container">
-  <div class="card">
-    <h2>OTKRain</h2>
-    <p>Owner | Kenworth W900</p>
-  </div>
-</div>
+  <div class="footer">© <span id="year"></span> Black Raven Logistics</div>
+</main>
 
-<footer>
-  © <span id="year"></span> BRL
-</footer>
-
-<script src="assets/site.js"></script>
+<script src="site.js"></script>
 </body>
 </html>

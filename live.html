@@ -1,72 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Live - Black Raven Logistics</title>
-  <link rel="stylesheet" href="assets/style.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Live — BRL</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-<header>
-  <h1>Watch Live on Twitch</h1>
-  <p>Black Raven Logistics — Live Dispatch</p>
+<header class="topbar">
+  <div class="container nav">
+    <a class="brand" href="index.html">
+      <div class="logoMark">BRL</div>
+      <div class="brandTitle">
+        <b>Black Raven Logistics</b>
+        <span>We Haul The Night.</span>
+      </div>
+    </a>
 
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="truckers.html">Official Truckers</a>
-    <a href="modpack.html">Modpack</a>
-    <a href="radio.html">Radio</a>
-    <a href="live.html">Live</a>
-    <a href="events.html">Events</a>
-    <a href="join.html">Join</a>
-    <a href="contact.html">Contact</a>
-  </nav>
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="truckers.html">Official Truckers</a>
+      <a href="modpack.html">Modpack</a>
+      <a href="radio.html">Radio</a>
+      <a href="live.html">Live</a>
+      <a href="join.html">Join</a>
+    </nav>
+  </div>
 </header>
 
-<div class="container">
-
-  <div class="card">
-    <h2>Live Stream</h2>
-    <p>
-      If the player shows an error, double-check the channel name and that the <b>parent domain</b> is correct.
-      Parent is locked to: <b>darkravenentertainment.github.io</b>
-    </p>
-
-    <div style="border:1px solid #222; border-radius:8px; overflow:hidden;">
-      <iframe
-        src="https://player.twitch.tv/?channel=RavensKnightTV&parent=darkravenentertainment.github.io&muted=true"
-        height="600"
-        width="100%"
-        allowfullscreen="true"
-        frameborder="0"
-        scrolling="no">
-      </iframe>
+<main class="container">
+  <section class="hero">
+    <div class="heroInner">
+      <div class="kicker">Twitch</div>
+      <h1 class="h1">Live Dispatch</h1>
+      <p class="sub">Embedded stream for RavensKnightTV (parent domain locked to GitHub Pages).</p>
     </div>
+  </section>
 
-    <div style="margin-top:12px;">
-      <a href="https://twitch.tv/RavensKnightTV" target="_blank" rel="noopener">
-        Open on Twitch
-      </a>
+  <section class="grid">
+    <div class="card span12">
+      <div class="cardHeader">
+        <h2>Watch Live</h2>
+        <span class="hint">RavensKnightTV</span>
+      </div>
+      <div class="cardBody">
+        <div class="embed">
+          <iframe
+            src="https://player.twitch.tv/?channel=RavensKnightTV&parent=darkravenentertainment.github.io&muted=true"
+            height="100%"
+            width="100%"
+            allowfullscreen="true"
+            frameborder="0"
+            scrolling="no">
+          </iframe>
+        </div>
+        <hr class="sep"/>
+        <a class="btn primary" href="https://twitch.tv/RavensKnightTV" target="_blank" rel="noopener">Open on Twitch</a>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h2>Stream Commands</h2>
-    <ul>
-      <li><b>!radio</b> — Convoy radio link</li>
-      <li><b>!modpack</b> — Required mods</li>
-      <li><b>!apply</b> — Join BRL</li>
-      <li><b>!events</b> — Upcoming convoys</li>
-    </ul>
-  </div>
+  <div class="footer">© <span id="year"></span> Black Raven Logistics</div>
+</main>
 
-</div>
-
-<footer>
-  © <span id="year"></span> Black Raven Logistics
-</footer>
-
-<script src="assets/site.js"></script>
+<script src="site.js"></script>
 </body>
 </html>

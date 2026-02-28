@@ -1,42 +1,86 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <title>Black Raven Logistics</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Black Raven Logistics — Official Hub</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-<header>
-  <h1>Black Raven Logistics</h1>
-  <p>We Haul The Night.</p>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="truckers.html">Official Truckers</a>
-    <a href="modpack.html">Modpack</a>
-    <a href="radio.html">Radio</a>
-    <a href="live.html">Live</a>
-    <a href="join.html">Join</a>
-  </nav>
+<header class="topbar">
+  <div class="container nav">
+    <a class="brand" href="index.html">
+      <div class="logoMark">BRL</div>
+      <div class="brandTitle">
+        <b>Black Raven Logistics</b>
+        <span>We Haul The Night.</span>
+      </div>
+    </a>
+
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="truckers.html">Official Truckers</a>
+      <a href="modpack.html">Modpack</a>
+      <a href="radio.html">Radio</a>
+      <a href="live.html">Live</a>
+      <a href="join.html">Join</a>
+    </nav>
+  </div>
 </header>
 
-<div class="container">
+<main class="container">
 
-  <div class="card">
-    <h2>Welcome to BRL</h2>
-    <p>Official ATS VTC hub for Black Raven Logistics.</p>
-  </div>
+  <section class="hero">
+    <div class="heroInner">
+      <div class="kicker">Official VTC Hub</div>
+      <h1 class="h1">Black Raven Logistics</h1>
+      <p class="sub">
+        Realism-focused ATS company hub: official truckers roster, modpack, convoy radio, and live dispatch on Twitch.
+      </p>
 
-  <div class="card">
-    <h2>Next Convoy</h2>
-    <p>Friday 20:00 GMT</p>
-  </div>
+      <div class="ctaRow">
+        <a class="btn primary" href="join.html">🚛 Join BRL</a>
+        <a class="btn" href="modpack.html">📦 Modpack</a>
+        <a class="btn" href="radio.html">📻 Radio</a>
+        <a class="btn" href="live.html">🎥 Twitch</a>
+      </div>
 
-</div>
+      <div class="notice">⚫ Currently Offline — Next Convoy: Friday 20:00 GMT</div>
+    </div>
+  </section>
 
-<footer>
-  © <span id="year"></span> Black Raven Logistics
-</footer>
+  <section class="grid">
+    <div class="card span6">
+      <div class="cardHeader">
+        <h2>Company Snapshot</h2>
+        <span class="hint">BRL at a glance</span>
+      </div>
+      <div class="cardBody">
+        <p><b>Fleet Focus:</b> Kenworth W900 (86" Sleeper)</p>
+        <p><b>Standard:</b> Realism rules, disciplined convoys</p>
+        <p><b>Streams:</b> twitch.tv/RavensKnightTV</p>
+      </div>
+    </div>
 
-<script src="assets/site.js"></script>
+    <div class="card span6">
+      <div class="cardHeader">
+        <h2>Quick Start</h2>
+        <span class="hint">Convoy-ready</span>
+      </div>
+      <div class="cardBody">
+        <ol>
+          <li>Install the required mods from <a href="modpack.html">Modpack</a>.</li>
+          <li>Open <a href="radio.html">Convoy Radio</a> before roll-out.</li>
+          <li>Check the roster on <a href="truckers.html">Official Truckers</a>.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">© <span id="year"></span> Black Raven Logistics</div>
+</main>
+
+<script src="site.js"></script>
 </body>
 </html>

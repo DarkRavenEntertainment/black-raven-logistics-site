@@ -1,3 +1,4 @@
+/* style.css */
 :root{
   --bg:#07090f;
   --panel:#0d1120;
@@ -406,4 +407,44 @@ a{ text-decoration:none; color:inherit; }
   border:1px solid rgba(180,13,43,0.35);
   background:rgba(180,13,43,0.10);
   color:var(--text);
+}
+
+/* =========================
+   Professional polish (append-only)
+   ========================= */
+
+:focus-visible{
+  outline:2px solid rgba(180,13,43,0.65);
+  outline-offset:3px;
+  border-radius:10px;
+}
+
+p{ line-height:1.65; }
+ul, ol{ padding-left:18px; }
+li{ margin:6px 0; }
+
+/* Used by radio.html */
+.sep{
+  border:0;
+  border-top:1px solid var(--line);
+  margin:18px 0;
+}
+
+@media (hover:none){
+  .btn:hover{ transform:none; }
+  .driverCard:hover{ transform:none; }
+}
+
+.cardBody > :first-child{ margin-top:0; }
+.cardBody > :last-child{ margin-bottom:0; }
+
+.embed iframe{ width:100%; height:100%; display:block; }
+
+@media (max-width:520px){
+  .h1{ font-size:34px; }
+  .heroInner{ padding:26px; }
+}
+
+.menu a.active{
+  border:1px solid rgba(232,236,255,0.12);
 }

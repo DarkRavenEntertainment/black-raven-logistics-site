@@ -1,4 +1,5 @@
-(function(){
+/* site.js */
+(function(){ 
 
   const path = location.pathname.split("/").pop() || "index.html";
   document.querySelectorAll(".menu a").forEach(a=>{

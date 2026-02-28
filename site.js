@@ -1,53 +1,40 @@
-(function () {
-  // Active nav
+(function(){
+
   const path = location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll(".menu a").forEach((a) => {
-    if (a.getAttribute("href") === path) a.classList.add("active");
+  document.querySelectorAll(".menu a").forEach(a=>{
+    if(a.getAttribute("href") === path) a.classList.add("active");
   });
 
-  // Year
   const y = document.getElementById("year");
-  if (y) y.textContent = String(new Date().getFullYear());
+  if(y) y.textContent = String(new Date().getFullYear());
 
-  // Only run Trucky logic on pages that have the elements
-  const hasStats =
-    document.getElementById("statMembers") &&
-    document.getElementById("statJobs") &&
-    document.getElementById("statDistance") &&
-    document.getElementById("statRating");
+  async function loadStats(){
+    try{
+      const res = await fetch("trucky.json?cache=" + Date.now());
+      const data = await res.json();
 
-  if (!hasStats) return;
+      document.getElementById("statMembers").textContent =
+        data.members ?? "—";
 
-  const setText = (id, val) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = String(val ?? "—");
-  };
+      document.getElementById("statJobs").textContent =
+        data.jobs ?? "—";
 
-  const fmtNumber = (n) => {
-    const num = Number(n);
-    if (Number.isFinite(num)) return num.toLocaleString();
-    return "—";
-  };
+      document.getElementById("statDistance").textContent =
+        data.total_distance ?? "—";
 
-  // Read local generated file (same-origin -> works on GitHub Pages)
-  fetch("trucky.json", { cache: "no-store" })
-    .then((r) => (r.ok ? r.json() : Promise.reject(new Error("trucky.json missing"))))
-    .then((data) => {
-      setText("statMembers", fmtNumber(data.members));
-      setText("statJobs", fmtNumber(data.jobs));
-      setText("statDistance", data.distance_text ?? "—");
-      setText("statRating", data.rating ?? "—");
+      document.getElementById("statOnTime").textContent =
+        data.on_time_percent ?? "—";
 
-      const updated = document.getElementById("truckyUpdated");
-      if (updated && data.updated_utc) {
-        updated.textContent = `Updated: ${data.updated_utc} UTC`;
+      const updated = document.getElementById("statUpdated");
+      if(updated && data.updated_utc){
+        updated.textContent = "Updated: " + data.updated_utc + " UTC";
       }
-    })
-    .catch(() => {
-      // If action hasn't run yet, show a clean fallback
-      setText("statMembers", "—");
-      setText("statJobs", "—");
-      setText("statDistance", "—");
-      setText("statRating", "—");
-    });
+
+    }catch(e){
+      console.error("Failed loading stats:", e);
+    }
+  }
+
+  loadStats();
+
 })();

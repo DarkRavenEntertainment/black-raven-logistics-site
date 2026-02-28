@@ -15,126 +15,206 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Fetch Trucky company JSON and write trucky.json
+      - name: Discover Trucky endpoints and write trucky.json
         env:
           TRUCKY_ACCESS_TOKEN: ${{ secrets.TRUCKY_ACCESS_TOKEN }}
         run: |
           python3 - << 'PY'
-          import json, datetime, urllib.request, os
+          import json, datetime, urllib.request, os, re
 
           COMPANY_ID = 43152
           token = os.environ.get("TRUCKY_ACCESS_TOKEN","").strip()
           if not token:
             raise SystemExit("Missing TRUCKY_ACCESS_TOKEN secret")
 
-          headers = {
+          HEADERS = {
             "Accept": "application/json",
             "User-Agent": "BlackRavenLogisticsSite/1.0 (GitHub Actions)",
             "x-access-token": token,
           }
 
-          url = f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}"
+          # ---- 1) Try to fetch Trucky OpenAPI spec (public) ----
+          # These are common locations; we'll try a few.
+          openapi_urls = [
+            "https://e.truckyapp.com/api/openapi.json",
+            "https://e.truckyapp.com/openapi.json",
+            "https://e.truckyapp.com/swagger/v1/swagger.json",
+            "https://e.truckyapp.com/swagger.json",
+          ]
 
-          req = urllib.request.Request(url, headers=headers)
-          with urllib.request.urlopen(req, timeout=25) as resp:
-            raw = resp.read().decode("utf-8", errors="replace")
-          company = json.loads(raw)
+          spec = None
+          spec_url = None
+          for u in openapi_urls:
+            try:
+              with urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "BRL-Site-Discovery/1.0"}), timeout=20) as r:
+                raw = r.read().decode("utf-8", errors="replace")
+              j = json.loads(raw)
+              if isinstance(j, dict) and "paths" in j:
+                spec = j
+                spec_url = u
+                break
+            except Exception:
+              pass
 
-          # ---- DEBUG: show keys (no token printed) ----
-          def top_keys(obj):
-            return list(obj.keys()) if isinstance(obj, dict) else []
+          if not spec:
+            # If OpenAPI isn't publicly reachable, we still do a minimal fallback
+            print("OpenAPI spec not found at known URLs. Falling back to minimal endpoints.")
+            paths = []
+          else:
+            paths = list(spec.get("paths", {}).keys())
+            print("OpenAPI loaded from:", spec_url)
+            print("Paths in spec:", len(paths))
 
-          print("TOP KEYS:", top_keys(company))
+          # ---- 2) Build candidate API URLs for company stats ----
+          # We look for any path that:
+          # - contains "company" or "vtc"
+          # - contains "{id}" or "{companyId}" etc.
+          # - and has keywords like stats/month/alltime/leaderboard/deliveries/jobs/distance
+          keywords = ("stat", "month", "alltime", "week", "year", "deliver", "job", "distance", "mileage", "leaderboard")
+          id_patterns = ("{id}", "{companyId}", "{company_id}", "{vtcId}", "{vtc_id}")
+          base = "https://e.truckyapp.com"
 
-          # Look for likely nested containers
-          for k in ["stats","statistic","statistics","totals","alltime","monthly","ats","ets2","games"]:
-            v = company.get(k) if isinstance(company, dict) else None
-            if isinstance(v, dict):
-              print(f"DICT KEYS company['{k}']:", list(v.keys()))
-            elif isinstance(v, list):
-              print(f"LIST LEN company['{k}']:", len(v))
+          candidates = []
+          for p in paths:
+            pl = p.lower()
+            if ("company" in pl or "vtc" in pl) and any(ip in p for ip in id_patterns) and any(k in pl for k in keywords):
+              candidates.append(p)
 
-          # Deep find helper
-          def deep_find(obj, key_names):
+          # Also include a few sane guesses that sometimes exist
+          guesses = [
+            "/api/v1/company/{id}/stats",
+            "/api/v1/company/{id}/statistics",
+            "/api/v1/company/{id}/overview",
+            "/api/v1/company/{id}/summary",
+            "/api/v1/company/{id}/reports/monthly",
+            "/api/v1/company/{id}/reports/alltime",
+            "/api/v1/company/{id}/timeline/month",
+            "/api/v1/company/{id}/deliveries/month",
+            "/api/v1/company/{id}/deliveries",
+            "/api/v1/company/{id}/jobs",
+          ]
+          candidates = list(dict.fromkeys(candidates + guesses))
+
+          # Substitute ID placeholder
+          def fill(path):
+            out = path
+            for ip in id_patterns:
+              out = out.replace(ip, str(COMPANY_ID))
+            return out
+
+          # ---- 3) Fetch company basic info (members) ----
+          company_url = f"{base}/api/v1/company/{COMPANY_ID}"
+          def get_json(url, headers):
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=25) as resp:
+              raw = resp.read().decode("utf-8", errors="replace")
+            return json.loads(raw)
+
+          company = get_json(company_url, HEADERS)
+          members = company.get("members_count", None)
+
+          # ---- 4) Try candidates until we find jobs/distance for ATS ----
+          found = []
+          errors = {}
+
+          def deep_find(obj, keys):
             if isinstance(obj, dict):
               for k, v in obj.items():
-                if k in key_names:
+                if k in keys:
                   return v
-                found = deep_find(v, key_names)
-                if found is not None:
-                  return found
+                f = deep_find(v, keys)
+                if f is not None:
+                  return f
             elif isinstance(obj, list):
-              for item in obj:
-                found = deep_find(item, key_names)
-                if found is not None:
-                  return found
+              for it in obj:
+                f = deep_find(it, keys)
+                if f is not None:
+                  return f
             return None
 
-          members = deep_find(company, {"membersCount","members_count","members","membersTotal"})
-          if isinstance(members, dict) and "count" in members:
-            members = members["count"]
+          def extract_jobs_distance(payload):
+            # Try to find ATS-specific areas first
+            # Common keys: ats, game="ats", game_id etc.
+            # We'll attempt a few heuristics.
 
-          # Try to extract ATS monthly-like stats from within company payload
-          # We prefer ATS numbers if present
-          def find_game_block(root, game_key):
-            # Common patterns: root["games"]["ats"], root["ats"], root["stats"]["ats"], list with game field etc.
-            if isinstance(root, dict):
-              if game_key in root and isinstance(root[game_key], dict):
-                return root[game_key]
-              games = root.get("games")
-              if isinstance(games, dict) and game_key in games and isinstance(games[game_key], dict):
-                return games[game_key]
-              stats = root.get("stats")
-              if isinstance(stats, dict):
-                if game_key in stats and isinstance(stats[game_key], dict):
-                  return stats[game_key]
-                g = stats.get("games")
-                if isinstance(g, dict) and game_key in g and isinstance(g[game_key], dict):
-                  return g[game_key]
-            return None
+            # 1) Direct "ats" dict
+            if isinstance(payload, dict) and "ats" in payload and isinstance(payload["ats"], dict):
+              block = payload["ats"]
+              jobs = deep_find(block, {"jobs", "jobsCount", "total_jobs", "job_count"})
+              dist = deep_find(block, {"distance", "miles", "kilometers", "total_distance", "mileage"})
+              return jobs, dist
 
-          ats = find_game_block(company, "ats")
-          ets2 = find_game_block(company, "ets2")
+            # 2) Games dictionary
+            games = payload.get("games") if isinstance(payload, dict) else None
+            if isinstance(games, dict) and "ats" in games and isinstance(games["ats"], dict):
+              block = games["ats"]
+              jobs = deep_find(block, {"jobs", "jobsCount", "total_jobs", "job_count"})
+              dist = deep_find(block, {"distance", "miles", "kilometers", "total_distance", "mileage"})
+              return jobs, dist
 
-          def pick_stats(block):
-            if not isinstance(block, dict):
-              return None, None, None
-            # jobs
-            jobs = deep_find(block, {"jobs","jobsCount","total_jobs","totalJobs"})
-            # distance
-            dist = deep_find(block, {"distance","total_distance","totalDistance","distance_total","total"})
-            # unit
-            unit = deep_find(block, {"unit","distance_unit","distanceUnit"})
-            return jobs, dist, unit
+            # 3) List items with game field
+            if isinstance(payload, dict):
+              for k in ("stats","statistics","data","items","results"):
+                v = payload.get(k)
+                if isinstance(v, list):
+                  for it in v:
+                    if isinstance(it, dict) and str(it.get("game","")).lower() == "ats":
+                      jobs = deep_find(it, {"jobs", "jobsCount", "total_jobs", "job_count"})
+                      dist = deep_find(it, {"distance", "miles", "kilometers", "total_distance", "mileage"})
+                      return jobs, dist
 
-          jobs, dist, unit = pick_stats(ats)
-          if jobs is None and dist is None:
-            jobs, dist, unit = pick_stats(company)  # last resort: anywhere
+            # 4) Last resort: any jobs/distance in payload
+            jobs = deep_find(payload, {"jobs", "jobsCount", "total_jobs", "job_count"})
+            dist = deep_find(payload, {"distance", "miles", "kilometers", "total_distance", "mileage"})
+            return jobs, dist
 
+          jobs = None
+          dist = None
+          used_endpoint = None
+
+          for p in candidates:
+            url = base + fill(p)
+            try:
+              payload = get_json(url, HEADERS)
+              j, d = extract_jobs_distance(payload)
+              # Accept if we got at least one meaningful value
+              if j is not None or d is not None:
+                jobs, dist = j, d
+                used_endpoint = url
+                found.append(p)
+                break
+            except Exception as e:
+              errors[url] = str(e)
+
+          # Format distance: your Trucky UI shows miles, so we label as mi by default.
           distance_text = None
-          try:
-            if dist is not None:
-              dist_num = float(dist)
-              label = unit or "mi"
-              distance_text = f"{int(dist_num):,} {label}"
-          except:
-            distance_text = str(dist) if dist is not None else None
-
-          rating = deep_find(company, {"rating","score"})
+          if dist is not None:
+            try:
+              distance_text = f"{int(float(dist)):,} mi"
+            except:
+              distance_text = str(dist)
 
           out = {
             "members": members,
             "jobs": jobs,
             "distance_text": distance_text,
-            "rating": rating,
+            "rating": None,
             "updated_utc": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
-            "source": url
+            "source_company": company_url,
+            "source_stats": used_endpoint,
+            "openapi_spec": spec_url,
+            "tried_paths": len(candidates),
           }
 
-          with open("trucky.json","w",encoding="utf-8") as f:
-            json.dump(out,f,ensure_ascii=False,indent=2)
+          with open("trucky.json", "w", encoding="utf-8") as f:
+            json.dump(out, f, ensure_ascii=False, indent=2)
 
           print("WROTE trucky.json:", out)
+          if errors:
+            print("Some errors (first 10):")
+            for i,(k,v) in enumerate(errors.items()):
+              if i>=10: break
+              print(k, "->", v)
           PY
 
       - name: Commit & push if changed

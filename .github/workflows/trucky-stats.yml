@@ -16,84 +16,120 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Fetch Trucky stats and write trucky.json
+        env:
+          TRUCKY_ACCESS_TOKEN: ${{ secrets.TRUCKY_ACCESS_TOKEN }}
         run: |
           python3 - << 'PY'
-          import json, datetime, sys, urllib.request
+          import json, datetime, urllib.request, os
 
           COMPANY_ID = 43152
-
-          # We try a few likely endpoints. Trucky's docs are in OpenAPI, and endpoints may vary by version.
-          candidates = [
-            f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}/alltime",
-            f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}/stats",
-            f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}",
-          ]
+          token = os.environ.get("TRUCKY_ACCESS_TOKEN", "").strip()
+          if not token:
+            raise SystemExit("Missing TRUCKY_ACCESS_TOKEN secret")
 
           headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "User-Agent": "BlackRavenLogisticsSite/1.0 (GitHub Actions)"
+            "User-Agent": "BlackRavenLogisticsSite/1.0 (GitHub Actions)",
+            "x-access-token": token,
           }
 
-          data = None
-          used = None
-          last_err = None
+          # We'll try a few likely endpoints and merge what we can.
+          urls = [
+            f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}",
+            f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}/alltime",
+            f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}/monthly",
+          ]
 
-          for url in candidates:
+          responses = {}
+          used = []
+
+          def get_json(url):
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=25) as resp:
+              raw = resp.read().decode("utf-8", errors="replace")
+            return json.loads(raw)
+
+          for url in urls:
             try:
-              req = urllib.request.Request(url, headers=headers)
-              with urllib.request.urlopen(req, timeout=25) as resp:
-                raw = resp.read().decode("utf-8", errors="replace")
-              j = json.loads(raw)
-              # Look for anything that resembles stats
-              if isinstance(j, dict) and j:
-                data = j
-                used = url
-                break
+              responses[url] = get_json(url)
+              used.append(url)
             except Exception as e:
-              last_err = e
+              responses[url] = {"_error": str(e)}
+
+          # Helper to search nested dicts for possible keys
+          def deep_find(obj, key_names):
+            if isinstance(obj, dict):
+              for k, v in obj.items():
+                if k in key_names:
+                  return v
+                found = deep_find(v, key_names)
+                if found is not None:
+                  return found
+            elif isinstance(obj, list):
+              for item in obj:
+                found = deep_find(item, key_names)
+                if found is not None:
+                  return found
+            return None
+
+          company = responses.get(f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}", {})
+          alltime = responses.get(f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}/alltime", {})
+          monthly = responses.get(f"https://e.truckyapp.com/api/v1/company/{COMPANY_ID}/monthly", {})
+
+          # Members (usually in company)
+          members = deep_find(company, {"members", "members_count", "membersCount", "membersTotal"})
+          if isinstance(members, dict) and "count" in members:
+            members = members["count"]
+
+          # Prefer ATS monthly stats if present, else ATS alltime, else any jobs/distance.
+          def pick_ats_stats(obj):
+            # Look for "ats" container
+            ats = obj.get("ats") if isinstance(obj, dict) else None
+            if isinstance(ats, dict):
+              jobs = deep_find(ats, {"jobs", "jobsCount", "total_jobs"})
+              dist = deep_find(ats, {"distance", "total", "total_distance", "distance_total"})
+              unit = deep_find(ats, {"unit", "distance_unit"})  # may not exist
+              return jobs, dist, unit
+            return None, None, None
+
+          jobs, dist, unit = pick_ats_stats(monthly)
+          if jobs is None and dist is None:
+            jobs, dist, unit = pick_ats_stats(alltime)
+
+          # Fallbacks
+          if jobs is None:
+            jobs = deep_find(monthly, {"jobs", "jobsCount"}) or deep_find(alltime, {"jobs", "jobsCount"})
+          if dist is None:
+            dist = deep_find(monthly, {"distance", "total_distance"}) or deep_find(alltime, {"distance", "total_distance"})
+
+          # Rating (if any)
+          rating = deep_find(company, {"rating", "score"}) or deep_find(alltime, {"rating", "score"})
+
+          distance_text = None
+          try:
+            if dist is not None:
+              dist_num = float(dist)
+              # Trucky UI shows miles for ATS in your screenshot, so label as "mi" if we can't detect.
+              label = (unit or "mi")
+              distance_text = f"{int(dist_num):,} {label}"
+          except:
+            distance_text = str(dist) if dist is not None else None
 
           out = {
-            "members": None,
-            "jobs": None,
-            "distance_text": None,
-            "rating": None,
+            "members": members,
+            "jobs": jobs,
+            "distance_text": distance_text,
+            "rating": rating,
             "updated_utc": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
-            "source": used
+            "sources_ok": used,
+            "errors": {k:v.get("_error") for k,v in responses.items() if isinstance(v, dict) and "_error" in v}
           }
-
-          # Best-effort extraction across possible schemas
-          def pick(*keys):
-            cur = data
-            for k in keys:
-              if not isinstance(cur, dict) or k not in cur:
-                return None
-              cur = cur[k]
-            return cur
-
-          # members count
-          out["members"] = pick("members", "count") or pick("stats", "members") or pick("members") or pick("membersCount")
-
-          # jobs
-          out["jobs"] = pick("stats", "jobs") or pick("jobs") or pick("jobsCount")
-
-          # distance (km/mi unknown) -> we format as a plain number with unit if we can infer
-          dist = pick("stats", "distance") or pick("distance") or pick("distance_total")
-          if dist is not None:
-            try:
-              dist_num = float(dist)
-              # default label as km (Trucky commonly reports km). You can change to mi later if needed.
-              out["distance_text"] = f"{int(dist_num):,} km"
-            except:
-              out["distance_text"] = str(dist)
-
-          # rating
-          out["rating"] = pick("rating") or pick("stats", "rating") or pick("score")
 
           with open("trucky.json", "w", encoding="utf-8") as f:
             json.dump(out, f, ensure_ascii=False, indent=2)
 
-          print("Wrote trucky.json from:", used, "err:", last_err)
+          print("Updated trucky.json. OK sources:", used)
           PY
 
       - name: Commit & push if changed

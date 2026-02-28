@@ -1,8 +1,11 @@
 {
   "members": 1,
-  "jobs": null,
+  "jobs": 3,
   "distance_text": null,
   "rating": null,
-  "updated_utc": "2026-02-28 03:50",
-  "source": "https://e.truckyapp.com/api/v1/company/43152"
+  "updated_utc": "2026-02-28 03:55",
+  "source_company": "https://e.truckyapp.com/api/v1/company/43152",
+  "source_stats": "https://e.truckyapp.com/api/v1/company/43152/stats",
+  "openapi_spec": null,
+  "tried_paths": 10
 }

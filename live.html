@@ -1,26 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Live - BRL</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Live - Black Raven Logistics</title>
+  <link rel="stylesheet" href="assets/style.css" />
 </head>
 <body>
 
 <header>
   <h1>Watch Live on Twitch</h1>
+  <p>Black Raven Logistics — Live Dispatch</p>
+
   <nav>
     <a href="index.html">Home</a>
+    <a href="truckers.html">Official Truckers</a>
+    <a href="modpack.html">Modpack</a>
+    <a href="radio.html">Radio</a>
+    <a href="live.html">Live</a>
+    <a href="events.html">Events</a>
+    <a href="join.html">Join</a>
+    <a href="contact.html">Contact</a>
   </nav>
 </header>
 
 <div class="container">
+
   <div class="card">
-    <p>Stream link coming soon.</p>
+    <h2>Live Stream</h2>
+    <p>
+      If the player shows an error, double-check the channel name and that the <b>parent domain</b> is correct.
+      Parent is locked to: <b>darkravenentertainment.github.io</b>
+    </p>
+
+    <div style="border:1px solid #222; border-radius:8px; overflow:hidden;">
+      <iframe
+        src="https://player.twitch.tv/?channel=RavensKnightTV&parent=darkravenentertainment.github.io&muted=true"
+        height="600"
+        width="100%"
+        allowfullscreen="true"
+        frameborder="0"
+        scrolling="no">
+      </iframe>
+    </div>
+
+    <div style="margin-top:12px;">
+      <a href="https://twitch.tv/RavensKnightTV" target="_blank" rel="noopener">
+        Open on Twitch
+      </a>
+    </div>
   </div>
+
+  <div class="card">
+    <h2>Stream Commands</h2>
+    <ul>
+      <li><b>!radio</b> — Convoy radio link</li>
+      <li><b>!modpack</b> — Required mods</li>
+      <li><b>!apply</b> — Join BRL</li>
+      <li><b>!events</b> — Upcoming convoys</li>
+    </ul>
+  </div>
+
 </div>
 
 <footer>
-  © <span id="year"></span> BRL
+  © <span id="year"></span> Black Raven Logistics
 </footer>
 
 <script src="assets/site.js"></script>

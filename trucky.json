@@ -3,12 +3,6 @@
   "jobs": null,
   "distance_text": null,
   "rating": null,
-  "updated_utc": "2026-02-28 03:45",
-  "sources_ok": [
-    "https://e.truckyapp.com/api/v1/company/43152"
-  ],
-  "errors": {
-    "https://e.truckyapp.com/api/v1/company/43152/alltime": "HTTP Error 404: Not Found",
-    "https://e.truckyapp.com/api/v1/company/43152/monthly": "HTTP Error 404: Not Found"
-  }
+  "updated_utc": "2026-02-28 03:50",
+  "source": "https://e.truckyapp.com/api/v1/company/43152"
 }
